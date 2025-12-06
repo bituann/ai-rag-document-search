@@ -26,7 +26,11 @@ public class DocumentEntity {
 
     private int chunkCount;
 
-    private List<Document> chunks;
+    private List<String> chunks;
 
+    @ElementCollection
+    @CollectionTable(name = "metadata", joinColumns = @JoinColumn(name = "metadata_id"))
+    @MapKeyColumn(name = "metadata_key")
+    @Column(name = "metadata_value")
     private Map<String, Object> metadata;
 }

@@ -14,11 +14,13 @@ import org.springframework.ai.document.Document;
 import org.springframework.ai.vectorstore.SearchRequest;
 import org.springframework.ai.vectorstore.VectorStore;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
+@Service
 public class DocumentServiceImpl implements DocumentService{
 
     DocumentRepository documentRepository;
@@ -45,9 +47,9 @@ public class DocumentServiceImpl implements DocumentService{
 
         DocumentEntity doc = DocumentEntity.builder()
                 .text(texts.stream().map(Document::getText).collect(Collectors.joining("\n\n")))
-                .chunks(chunkedText)
+                .chunks(chunkedText.stream().map(Document::getText).toList())
                 .chunkCount(chunkedText.size())
-                .metadata(chunkedText.getFirst().getMetadata())
+                .metadata(chunkedText.get(0).getMetadata())
                 .build();
 
         documentRepository.save(doc);
@@ -113,7 +115,7 @@ public class DocumentServiceImpl implements DocumentService{
 
         return DocumentResponse.builder()
                 .text(doc.getText())
-                .chunks(doc.getChunks().stream().map(Document::getText).toList())
+                .chunks(doc.getChunks())
                 .metadata(doc.getMetadata())
                 .build();
     }
