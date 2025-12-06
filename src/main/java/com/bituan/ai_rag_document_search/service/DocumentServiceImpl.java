@@ -1,7 +1,9 @@
 package com.bituan.ai_rag_document_search.service;
 
+import com.bituan.ai_rag_document_search.dto.response.DocumentResponse;
 import com.bituan.ai_rag_document_search.dto.response.QueryResponse;
 import com.bituan.ai_rag_document_search.exception.NoMatchFoundException;
+import com.bituan.ai_rag_document_search.exception.ResourceNotFoundException;
 import com.bituan.ai_rag_document_search.model.DocumentEntity;
 import com.bituan.ai_rag_document_search.repository.DocumentRepository;
 import org.springframework.ai.chat.client.ChatClient;
@@ -14,10 +16,7 @@ import org.springframework.ai.vectorstore.VectorStore;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class DocumentServiceImpl implements DocumentService{
@@ -106,5 +105,16 @@ public class DocumentServiceImpl implements DocumentService{
         }
 
         return response;
+    }
+
+    @Override
+    public DocumentResponse getDocument(UUID id) {
+        DocumentEntity doc = documentRepository.findById(id).orElseThrow(ResourceNotFoundException::new);
+
+        return DocumentResponse.builder()
+                .text(doc.getText())
+                .chunks(doc.getChunks().stream().map(Document::getText).toList())
+                .metadata(doc.getMetadata())
+                .build();
     }
 }

@@ -14,6 +14,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
 
 @RestController("/documents")
 public class AiRagController {
@@ -58,5 +59,10 @@ public class AiRagController {
     @GetMapping
     public ResponseEntity<?> getAllDocuments () {
         return ResponseEntity.ok(documentService.getAllDocuments());
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getDocument (@RequestParam UUID id) {
+        return ResponseEntity.ok(documentService.getDocument(id));
     }
 }
