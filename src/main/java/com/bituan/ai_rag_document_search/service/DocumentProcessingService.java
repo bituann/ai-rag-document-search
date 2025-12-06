@@ -1,9 +1,11 @@
 package com.bituan.ai_rag_document_search.service;
 
+import org.springframework.ai.document.Document;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
+
 public interface DocumentProcessingService {
-    String extractText(MultipartFile file);
-    void chunkText(String text);
-    void generateEmbeddings(String text);
+    List<Document> extractText(MultipartFile file);
+    List<Document> chunkText(List<Document> documents);
 }
