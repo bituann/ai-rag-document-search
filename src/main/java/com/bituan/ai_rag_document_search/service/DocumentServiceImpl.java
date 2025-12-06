@@ -1,5 +1,6 @@
 package com.bituan.ai_rag_document_search.service;
 
+import com.bituan.ai_rag_document_search.dto.response.QueryResponse;
 import com.bituan.ai_rag_document_search.exception.NoMatchFoundException;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.prompt.Prompt;
@@ -37,7 +38,7 @@ public class DocumentServiceImpl implements DocumentService{
     }
 
     @Override
-    public String query(String query, int topK) {
+    public QueryResponse query(String query, int topK) {
         SearchRequest request = SearchRequest.builder().query(query).topK(topK).build();
 
         List<Document> similarDocuments = vectorStore.similaritySearch(request);
@@ -61,6 +62,14 @@ public class DocumentServiceImpl implements DocumentService{
                 Map.of("context", context, "question", query)
         );
 
-        return chatClient.prompt(prompt).call().content();
+        String answer = chatClient.prompt(prompt).call().content();
+        List<String> chunks = similarDocuments.stream().map(Document::getText).toList();
+        Map<String, Double> similarityScores = similarDocuments.stream().collect(Collectors.toMap(Document::getText, Document::getScore));
+
+        return QueryResponse.builder()
+                .answer(answer)
+                .chunks(chunks)
+                .similarityScores(similarityScores)
+                .build();
     }
 }
