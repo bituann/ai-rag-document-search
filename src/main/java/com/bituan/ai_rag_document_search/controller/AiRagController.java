@@ -1,10 +1,14 @@
 package com.bituan.ai_rag_document_search.controller;
 
-import com.bituan.ai_rag_document_search.service.DocumentProcessingService;
+import com.bituan.ai_rag_document_search.dto.request.QueryRequest;
+import com.bituan.ai_rag_document_search.dto.response.QueryResponse;
+import com.bituan.ai_rag_document_search.service.DocumentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -13,11 +17,11 @@ import java.util.List;
 
 @RestController("/documents")
 public class AiRagController {
-    DocumentProcessingService documentProcessingService;
+    DocumentService documentService;
 
     @Autowired
-    AiRagController(DocumentProcessingService documentProcessingService) {
-        this.documentProcessingService = documentProcessingService;
+    AiRagController(DocumentService documentService) {
+        this.documentService = documentService;
     }
 
     @PostMapping("/upload")
@@ -41,8 +45,13 @@ public class AiRagController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("%s files are not accepted. Please upload a valid document format.". formatted(fileExtension));
         }
 
-        String documentText = documentProcessingService.extractText(file);
+        documentService.uploadDocument(file);
 
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok("File uploaded successfully");
+    }
+
+    @GetMapping("/query")
+    public ResponseEntity<QueryResponse> query (@RequestParam QueryRequest request) {
+        return ResponseEntity.ok(documentService.query(request.getQuery(), request.getTopK()));
     }
 }
