@@ -2,9 +2,12 @@ package com.bituan.ai_rag_document_search.service;
 
 import com.bituan.ai_rag_document_search.dto.response.QueryResponse;
 import com.bituan.ai_rag_document_search.exception.NoMatchFoundException;
+import com.bituan.ai_rag_document_search.model.DocumentEntity;
+import com.bituan.ai_rag_document_search.repository.DocumentRepository;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.prompt.Prompt;
 import org.springframework.ai.chat.prompt.PromptTemplate;
+import org.springframework.ai.chroma.vectorstore.ChromaApi;
 import org.springframework.ai.document.Document;
 import org.springframework.ai.vectorstore.SearchRequest;
 import org.springframework.ai.vectorstore.VectorStore;
@@ -17,15 +20,20 @@ import java.util.stream.Collectors;
 
 public class DocumentServiceImpl implements DocumentService{
 
+    DocumentRepository documentRepository;
     DocumentProcessingService documentProcessingService;
     VectorStore vectorStore;
+    ChromaApi chromaVectorStore;
     ChatClient chatClient;
 
     @Autowired
-    public DocumentServiceImpl(DocumentProcessingService documentProcessingService, VectorStore vectorStore,
+    public DocumentServiceImpl(DocumentRepository documentRepository, DocumentProcessingService documentProcessingService,
+                               VectorStore vectorStore, ChromaApi chromaVectorStore,
                                ChatClient chatClient) {
+        this.documentRepository = documentRepository;
         this.documentProcessingService = documentProcessingService;
         this.vectorStore = vectorStore;
+        this.chromaVectorStore = chromaVectorStore;
         this.chatClient = chatClient;
     }
 
@@ -33,6 +41,14 @@ public class DocumentServiceImpl implements DocumentService{
     public void uploadDocument(MultipartFile file) {
         List<Document> texts = documentProcessingService.extractText(file);
         List<Document> chunkedText = documentProcessingService.chunkText(texts);
+
+        DocumentEntity doc = DocumentEntity.builder()
+                .chunks(chunkedText)
+                .chunkCount(chunkedText.size())
+                .metadata(chunkedText.getFirst().getMetadata())
+                .build();
+
+        documentRepository.save(doc);
 
         vectorStore.add(chunkedText);
     }
