@@ -18,6 +18,11 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>("No match found in document", HttpStatus.OK);
     }
 
+    @ExceptionHandler(ResourceNotFoundException.class)
+    public ResponseEntity<String> handleResourceNotFoundException(Exception ex) {
+        return new ResponseEntity<>("Document does not exist", HttpStatus.NOT_FOUND);
+    }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<String> handleGenericException(Exception ex) {
         return new ResponseEntity<>("An unexpected error occurred: " + ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
