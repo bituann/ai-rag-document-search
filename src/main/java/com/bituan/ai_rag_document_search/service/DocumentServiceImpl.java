@@ -32,12 +32,12 @@ public class DocumentServiceImpl implements DocumentService{
     @Autowired
     public DocumentServiceImpl(DocumentRepository documentRepository, DocumentProcessingService documentProcessingService,
                                VectorStore vectorStore, ChromaApi chromaVectorStore,
-                               ChatClient chatClient) {
+                               ChatClient.Builder chatClient) {
         this.documentRepository = documentRepository;
         this.documentProcessingService = documentProcessingService;
         this.vectorStore = vectorStore;
         this.chromaVectorStore = chromaVectorStore;
-        this.chatClient = chatClient;
+        this.chatClient = chatClient.build();
     }
 
     @Override
