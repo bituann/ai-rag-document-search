@@ -10,13 +10,16 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(ServerException.class)
     public ResponseEntity<String> handleMyCustomException(ServerException ex) {
-        // Log the exception, create a custom error message, etc.
         return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(NoMatchFoundException.class)
+    public ResponseEntity<String> handleNoMatchFoundException(Exception ex) {
+        return new ResponseEntity<>("No match found in document", HttpStatus.OK);
     }
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<String> handleGenericException(Exception ex) {
-        // Handle any other unhandled exceptions
         return new ResponseEntity<>("An unexpected error occurred: " + ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }
