@@ -22,6 +22,8 @@ public class DocumentEntity {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
+    private String text;
+
     private int chunkCount;
 
     private List<Document> chunks;

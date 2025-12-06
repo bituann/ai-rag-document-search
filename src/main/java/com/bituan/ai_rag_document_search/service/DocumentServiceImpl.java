@@ -45,6 +45,7 @@ public class DocumentServiceImpl implements DocumentService{
         List<Document> chunkedText = documentProcessingService.chunkText(texts);
 
         DocumentEntity doc = DocumentEntity.builder()
+                .text(texts.stream().map(Document::getText).collect(Collectors.joining("\n\n")))
                 .chunks(chunkedText)
                 .chunkCount(chunkedText.size())
                 .metadata(chunkedText.getFirst().getMetadata())
