@@ -14,6 +14,8 @@ import org.springframework.ai.vectorstore.VectorStore;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -87,5 +89,21 @@ public class DocumentServiceImpl implements DocumentService{
                 .chunks(chunks)
                 .similarityScores(similarityScores)
                 .build();
+    }
+
+    @Override
+    public List<Map<String, Object>> getAllDocuments() {
+        List<DocumentEntity> docs = documentRepository.findAll();
+        List<Map<String, Object>> response = new ArrayList<>();
+
+        for (DocumentEntity doc : docs) {
+            Map<String, Object> responseDoc = new HashMap<>();
+            responseDoc.put("document_id", doc.getId());
+            responseDoc.put("document_name", doc.getMetadata().get("source"));
+            responseDoc.put("chunk_count", doc.getChunkCount());
+            response.add(responseDoc);
+        }
+
+        return response;
     }
 }

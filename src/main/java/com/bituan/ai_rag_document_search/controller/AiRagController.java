@@ -54,4 +54,9 @@ public class AiRagController {
     public ResponseEntity<QueryResponse> query (@RequestParam QueryRequest request) {
         return ResponseEntity.ok(documentService.query(request.getQuery(), request.getTopK()));
     }
+
+    @GetMapping
+    public ResponseEntity<?> getAllDocuments () {
+        return ResponseEntity.ok(documentService.getAllDocuments());
+    }
 }
