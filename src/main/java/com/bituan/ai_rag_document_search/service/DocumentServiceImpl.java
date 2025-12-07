@@ -60,9 +60,9 @@ public class DocumentServiceImpl implements DocumentService{
                 .metadata(metadata)
                 .build();
 
-        documentRepository.save(doc);
-
         vectorStore.add(chunkedText);
+
+        documentRepository.save(doc);
     }
 
     @Override
