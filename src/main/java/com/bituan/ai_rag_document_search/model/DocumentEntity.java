@@ -1,12 +1,10 @@
 package com.bituan.ai_rag_document_search.model;
 
-import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.Type;
 
 import java.util.List;
 import java.util.Map;
@@ -23,17 +21,15 @@ public class DocumentEntity {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @Lob
-    @Column(columnDefinition = "text")
     private String text;
 
     private int chunkCount;
 
-    @Type(JsonBinaryType.class)
-    @Column(columnDefinition = "jsonb")
     private List<String> chunks;
 
-    @Type(JsonBinaryType.class)
-    @Column(columnDefinition = "jsonb")
+    @ElementCollection
+    @CollectionTable(name = "metadata", joinColumns = @JoinColumn(name = "metadata_id"))
+    @MapKeyColumn(name = "metadata_key")
+    @Column(name = "metadata_value")
     private Map<String, Object> metadata;
 }
