@@ -130,20 +130,8 @@ curl "http://localhost:8080/documents/{uuid}"
 - For Spring AI usage consult the Spring AI docs: https://spring.io/projects/spring-ai
 - For Chroma and OpenAI configuration, consult their respective docs (Chroma, OpenAI).
 
-## Contributing
-
-Contributions are welcome. Please read `CONTRIBUTING.md` if present. If not present, open an issue to discuss major changes before creating a PR.
-
 ## Maintainers
 
 - Repository owner: `bituann` (see GitHub repo for contact details)
 
-## License
-
-See the `LICENSE` file in the repository for license details.
-
 ---
-
-File: `README.md` (project root) — created by project maintainer
-# ai-rag-document-search
-A backend service that takes a document and answers a user's questions on it using Retrieval-Augmented Generation (RAG)
