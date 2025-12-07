@@ -28,7 +28,7 @@ public class AiRagController {
     }
 
     @PostMapping(value = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    @Operation(summary = "Upload a document. Supported formats: DOC, DOCX, PDF, TXT")
+    @Operation(summary = "Upload a document. Supported formats: DOCX, PDF, TXT")
     @io.swagger.v3.oas.annotations.responses.ApiResponses(value = {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "File uploaded successfully"),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "400")
@@ -51,12 +51,10 @@ public class AiRagController {
 
         // file extension validation
         if (!allowedExtensions.contains(fileExtension)) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ErrorResponse.builder().message("%s files are not accepted. Please upload a valid document format (DOCX, PDF, or TXT).". formatted(fileExtension)).build());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ErrorResponse.builder().message("%s files are not accepted. Please upload a valid document format (DOCX, PDF, or TXT).". formatted(fileExtension.toUpperCase())).build());
         }
 
-        documentService.uploadDocument(file);
-
-        return ResponseEntity.ok("File uploaded successfully");
+        return ResponseEntity.ok(documentService.uploadDocument(file));
     }
 
     @GetMapping("/query")

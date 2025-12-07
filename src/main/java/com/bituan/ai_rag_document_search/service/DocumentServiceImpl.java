@@ -41,7 +41,7 @@ public class DocumentServiceImpl implements DocumentService{
     }
 
     @Override
-    public void uploadDocument(MultipartFile file) {
+    public DocumentEntity uploadDocument(MultipartFile file) {
         List<Document> texts = documentProcessingService.extractText(file);
         List<Document> chunkedText = documentProcessingService.chunkText(texts);
 
@@ -63,6 +63,8 @@ public class DocumentServiceImpl implements DocumentService{
         vectorStore.add(chunkedText);
 
         documentRepository.save(doc);
+
+        return doc;
     }
 
     @Override
