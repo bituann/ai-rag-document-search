@@ -1,6 +1,5 @@
 package com.bituan.ai_rag_document_search.controller;
 
-import com.bituan.ai_rag_document_search.dto.request.QueryRequest;
 import com.bituan.ai_rag_document_search.dto.response.QueryResponse;
 import com.bituan.ai_rag_document_search.service.DocumentService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,8 +50,8 @@ public class AiRagController {
     }
 
     @GetMapping("/query")
-    public ResponseEntity<QueryResponse> query (@RequestParam QueryRequest request) {
-        return ResponseEntity.ok(documentService.query(request.getQuery(), request.getTopK()));
+    public ResponseEntity<QueryResponse> query (@RequestParam String query, @RequestParam int topK) {
+        return ResponseEntity.ok(documentService.query(query, topK));
     }
 
     @GetMapping("/")

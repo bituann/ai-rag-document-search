@@ -45,11 +45,19 @@ public class DocumentServiceImpl implements DocumentService{
         List<Document> texts = documentProcessingService.extractText(file);
         List<Document> chunkedText = documentProcessingService.chunkText(texts);
 
+        Map<String, Object> metadata = chunkedText.get(0).getMetadata();
+        metadata.put("source", file.getOriginalFilename());
+
         DocumentEntity doc = DocumentEntity.builder()
                 .text(texts.stream().map(Document::getText).collect(Collectors.joining("\n\n")))
-                .chunks(chunkedText.stream().map(Document::getText).toList())
+                .chunks(chunkedText.stream().map(chunk -> {
+                    Map<String, String> map = new HashMap<>();
+                    map.put("id", chunk.getId());
+                    map.put("text", chunk.getText());
+                    return map;
+                }).toList())
                 .chunkCount(chunkedText.size())
-                .metadata(chunkedText.get(0).getMetadata())
+                .metadata(metadata)
                 .build();
 
         documentRepository.save(doc);
@@ -83,8 +91,13 @@ public class DocumentServiceImpl implements DocumentService{
         );
 
         String answer = chatClient.prompt(prompt).call().content();
-        List<String> chunks = similarDocuments.stream().map(Document::getText).toList();
-        Map<String, Double> similarityScores = similarDocuments.stream().collect(Collectors.toMap(Document::getText, Document::getScore));
+        List<Map<String, String>> chunks = similarDocuments.stream().map(doc -> {
+            Map<String, String> map = new HashMap<>();
+            map.put("id", doc.getId());
+            map.put("text", doc.getText());
+            return map;
+        }).toList();
+        Map<String, Double> similarityScores = similarDocuments.stream().collect(Collectors.toMap(Document::getId, Document::getScore));
 
         return QueryResponse.builder()
                 .answer(answer)

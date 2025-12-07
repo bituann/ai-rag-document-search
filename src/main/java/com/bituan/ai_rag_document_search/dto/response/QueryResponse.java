@@ -14,6 +14,6 @@ import java.util.Map;
 @NoArgsConstructor
 public class QueryResponse {
     private String answer;
-    private List<String> chunks;
+    private List<Map<String, String>> chunks;
     private Map<String, Double> similarityScores;
 }

@@ -31,7 +31,7 @@ public class DocumentEntity {
 
     @Type(JsonBinaryType.class)
     @Column(columnDefinition = "jsonb")
-    private List<String> chunks;
+    private List<Map<String, String>> chunks;
 
     @Type(JsonBinaryType.class)
     @Column(columnDefinition = "jsonb")

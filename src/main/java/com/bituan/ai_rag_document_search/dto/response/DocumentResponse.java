@@ -14,6 +14,6 @@ import java.util.Map;
 @NoArgsConstructor
 public class DocumentResponse {
     private String text;
-    private List<String> chunks;
+    private List<Map<String, String>> chunks;
     private Map<String, Object> metadata;
 }
